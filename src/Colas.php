@@ -2,7 +2,7 @@
 
 namespace Epayco\Colas;
 
-require 'vendor/autoload.php';
+//require 'vendor/autoload.php';
 
 class Colas{
 
