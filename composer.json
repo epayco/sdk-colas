@@ -5,6 +5,8 @@
     "keywords": ["epayco", "sdk"],
     "homepage": "https://github.com/epayco/sdk-colas",
     "license": "MIT",
+    "minimum-stability": "dev",
+    "prefer-stable": true,
     "authors": [{
         "name": "Epayco and contributors",
         "homepage": "https://github.com/epayco"
