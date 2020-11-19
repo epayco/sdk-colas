@@ -26,7 +26,8 @@ try{
 	$path_login='/login';
 
 	$options = array(
-	'auth' => array($this->public_key, $this->private_key)
+	'auth' => array($this->public_key, $this->private_key),
+	'timeout' => 30
 	);
 
 	$request = \Requests::post($this->base_url.$path_login, array(), array(),$options);
@@ -51,13 +52,15 @@ public function addMessage($cola,$action,$message){
 	}
 	try{
 	$headers = array('Content-Type' => 'application/json','Authorization'=>'Bearer '.$this->token);
-
+	$options = array(
+	'timeout' => 30
+	);
 	$path_action="/add/queue/$cola";
 	$data=array('action'=>$action,'message'=>$message);
 
 	$post_data=json_encode($data);
 
-	$request = \Requests::post($this->base_url.$path_action, $headers, $post_data,array());
+	$request = \Requests::post($this->base_url.$path_action, $headers, $post_data,array(),$options);
 
 	$response=json_decode($request->body);
 
