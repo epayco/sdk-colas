@@ -4,74 +4,74 @@ namespace Epayco\Colas;
 
 //require 'vendor/autoload.php';
 
-class Colas{
+class Colas
+{
 
-private $public_key=null;
-private $private_key=null;
-public  $base_url;
-public  $token="";
+    private $public_key = null;
+    private $private_key = null;
+    public $base_url;
+    public $token = "";
 
-public function __construct($public_key,$private_key){
+    public function __construct($public_key, $private_key)
+    {
+        $this->public_key = $public_key;
+        $this->private_key = $private_key;
+        $this->base_url = (getenv("BASE_URL_SETH")) ? getenv("BASE_URL_SETH") : "https://seth.epayco.co";
+    }
 
-$this->public_key=$public_key;
-$this->private_key=$private_key;
-$this->base_url='https://seth.epayco.co';
+    public function login()
+    {
 
-}
+        // Now let's make a request!
+        try {
+            $path_login = '/login';
 
-public function login(){
+            $options = array(
+                'auth' => array($this->public_key, $this->private_key),
+                'timeout' => 60
+            );
 
-// Now let's make a request!
-try{
-	$path_login='/login';
+            $request = \Requests::post($this->base_url . $path_login, array(), array(), $options);
+            $response = json_decode($request->body);
+            $this->token = $response->token;
+            return $response;
 
-	$options = array(
-	'auth' => array($this->public_key, $this->private_key),
-	'timeout' => 30
-	);
+        } catch (Exception $ex) {
 
-	$request = \Requests::post($this->base_url.$path_login, array(), array(),$options);
-	$response=json_decode($request->body);
-	$this->token=$response->token;
-	return $response;
-
-}catch(Exception $ex){
-
-	$obj=new \stdClass();
-	$obj->token=="";
-	return $obj;
-}
+            $obj = new \stdClass();
+            $obj->token == "";
+            return $obj;
+        }
 
 
-}
+    }
 
-public function addMessage($cola,$action,$message){
+    public function addMessage($cola, $action, $message)
+    {
 
-	if($this->token==""){
-	 	$this->login();
-	}
-	try{
-	$headers = array('Content-Type' => 'application/json','Authorization'=>'Bearer '.$this->token);
-	$options = array(
-	'timeout' => 30
-	);
-	$path_action="/add/queue/$cola";
-	$data=array('action'=>$action,'message'=>$message);
+        if ($this->token == "") {
+            $this->login();
+        }
+        try {
+            $headers = array('Content-Type' => 'application/json', 'Authorization' => 'Bearer ' . $this->token);
+            $options = array(
+                'timeout' => 60
+            );
+            $path_action = "/add/queue/$cola";
+            $data = array('action' => $action, 'message' => $message);
 
-	$post_data=json_encode($data);
+            $post_data = json_encode($data);
 
-	$request = \Requests::post($this->base_url.$path_action, $headers, $post_data,array(),$options);
+            $request = \Requests::post($this->base_url . $path_action, $headers, $post_data, array(), $options);
 
-	$response=json_decode($request->body);
+            $response = json_decode($request->body);
 
-	return $response;
-	
-	}	
-	
-	catch(\Exception $ex){
-		return false;
-	}
+            return $response;
 
-}
+        } catch (\Exception $ex) {
+            return false;
+        }
+
+    }
 
 }
