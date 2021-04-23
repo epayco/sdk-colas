@@ -16,7 +16,7 @@ class Colas
     {
         $this->public_key = $public_key;
         $this->private_key = $private_key;
-        $this->base_url = (getenv("BASE_URL_SETH")) ? getenv("BASE_URL_SETH") : "https://seth.epayco.co";
+        $this->getUrlSeth();
     }
 
     public function login()
@@ -72,6 +72,21 @@ class Colas
             return false;
         }
 
+    }
+
+    private function getUrlSeth()
+    {
+        $environment = getenv("APP_SETH_ENVIRONMENT");
+        switch ($environment) {
+            case "test";
+                $this->base_url = "https://seth.epayco.xyz";
+                break;
+            case "dev";
+                $this->base_url = "https://seth.epayco.io";
+                break;
+            default;
+                $this->base_url = "https://seth.epayco.co";
+        }
     }
 
 }
