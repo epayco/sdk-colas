@@ -28,7 +28,8 @@ class Colas
 
             $options = array(
                 'auth' => array($this->public_key, $this->private_key),
-                'timeout' => 60
+                'timeout' => 30,
+                'connect_timeout' => 30,
             );
 
             $request = \Requests::post($this->base_url . $path_login, array(), array(), $options);
@@ -55,7 +56,8 @@ class Colas
         try {
             $headers = array('Content-Type' => 'application/json', 'Authorization' => 'Bearer ' . $this->token);
             $options = array(
-                'timeout' => 60
+                'timeout' => 30,
+                'connect_timeout' => 30,
             );
             $path_action = "/add/queue/$cola";
             $data = array('action' => $action, 'message' => $message);
