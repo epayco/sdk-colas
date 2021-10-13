@@ -64,7 +64,7 @@ class Colas
 
             $post_data = json_encode($data);
 
-            $request = \Requests::post($this->base_url . $path_action, $headers, $data, $options);
+            $request = \Requests::post($this->base_url . $path_action, $headers, $post_data, $options);
             $response = json_decode($request->body);
 
             return $response;
