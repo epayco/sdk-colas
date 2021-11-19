@@ -75,6 +75,27 @@ class Colas
 
     }
 
+    public function addMessageRedis($action, $message)
+    {
+        if ($this->token == "") {
+            $this->login();
+        }
+        try {
+            $headers     = array('Content-Type' => 'application/json', 'Authorization' => 'Bearer ' . $this->token);
+            $options     = array('timeout' => 30, 'connect_timeout' => 30);
+            $path_action = "/redis/queue";
+            $post_data   = json_encode(array('action' => $action, 'message' => $message));
+            $request     = \Requests::post($this->base_url . $path_action, $headers, $post_data, $options);
+            $response    = json_decode($request->body);
+
+        } catch (\Exception $ex) {
+            $response =  false;
+
+        }
+
+        return $response;
+    }
+
     private function getUrlSeth()
     {
         $environment = getenv("APP_SETH_ENVIRONMENT");
