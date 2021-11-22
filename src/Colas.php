@@ -28,7 +28,8 @@ class Colas
 
             $options = array(
                 'auth' => array($this->public_key, $this->private_key),
-                'timeout' => 60
+                'timeout' => 60,
+                'connect_timeout' => 60,
             );
 
             $request = \Requests::post($this->base_url . $path_login, array(), array(), $options);
@@ -55,15 +56,15 @@ class Colas
         try {
             $headers = array('Content-Type' => 'application/json', 'Authorization' => 'Bearer ' . $this->token);
             $options = array(
-                'timeout' => 60
+                'timeout' => 60,
+                'connect_timeout' => 60,
             );
             $path_action = "/add/queue/$cola";
             $data = array('action' => $action, 'message' => $message);
 
             $post_data = json_encode($data);
 
-            $request = \Requests::post($this->base_url . $path_action, $headers, $post_data, array(), $options);
-
+            $request = \Requests::post($this->base_url . $path_action, $headers, $post_data, $options);
             $response = json_decode($request->body);
 
             return $response;
@@ -72,6 +73,27 @@ class Colas
             return false;
         }
 
+    }
+
+    public function addMessageRedis($action, $message)
+    {
+        if ($this->token == "") {
+            $this->login();
+        }
+        try {
+            $headers     = array('Content-Type' => 'application/json', 'Authorization' => 'Bearer ' . $this->token);
+            $options     = array('timeout' => 60, 'connect_timeout' => 60);
+            $path_action = "/redis/queue";
+            $post_data   = json_encode(array('action' => $action, 'message' => $message));
+            $request     = \Requests::post($this->base_url . $path_action, $headers, $post_data, $options);
+            $response    = json_decode($request->body);
+
+        } catch (\Exception $ex) {
+            $response =  false;
+
+        }
+
+        return $response;
     }
 
     private function getUrlSeth()
