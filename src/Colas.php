@@ -100,13 +100,11 @@ class Colas
     {
         $environment = getenv("APP_SETH_ENVIRONMENT");
         switch ($environment) {
-            case "test";
-                $this->base_url = "https://seth.epayco.xyz";
+            case "test":
+            case "dev":
+                $this->base_url = getenv("APP_SETH_URL") ?: "https://eks-seth-service.epayco.io";
                 break;
-            case "dev";
-                $this->base_url = "https://seth.epayco.io";
-                break;
-            default;
+            default:
                 $this->base_url = "https://seth.epayco.co";
         }
     }
